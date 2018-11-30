@@ -25,31 +25,25 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
 import Raphael from 'raphael/raphael'
 global.Raphael = Raphael
-// import Vue from 'vue'
-// import { DonutChart } from "vue-morris"
 import { LineChart } from "vue-morris"
 export default {
   name: "dataAnalysis",
   components: {
-    // DonutChart,
     LineChart
   },
-  data: function() {
-    return {
-      ydif: 10,
-      linechartData:[
-        {"Year": 2007, "Men": 106898, "Female": 97516},
-        {"Year": 2008, "Men": 103937, "Female": 94796},
-        {"Year": 2009, "Men": 99492, "Female": 91818},
-        {"Year": 2010, "Men": 87213, "Female": 79673},
-        {"Year": 2011, "Men": 101943, "Female": 94684},
-        {"Year": 2012, "Men": 118848, "Female": 110633},
-        {"Year": 2013, "Men": 103120, "Female": 95993},
-      ],
-    };
-  },
+  computed: {
+    ...mapGetters(['showLineChart']),
+    ydif(){
+      return this.showLineChart.ydif
+    },
+    linechartData(){
+      return this.showLineChart.linechartData
+    },
+    
+  }
 };
 </script>
 

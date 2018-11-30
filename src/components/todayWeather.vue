@@ -26,13 +26,11 @@
               <img :id="condition" src="../../public/img_trans.gif" alt="ICONS">
               <br>
             </div>
-            <!-- City: {{cityName}} -->
             <br>
-            Temperature : {{ temp }}&deg;F
+            Temperature : {{ temp }}&deg;C
             <br>
             Humidity : {{ humidity }}%
             <br>
-            <!-- Condition: {{ condition }} -->
             <br>
           </div>
 
@@ -46,63 +44,105 @@
 </template>
 
 <script>
-import axios from "axios";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "todayWeather",
-  data: () => {
-    return {
-      country: null,
-      temp: null,
-      humidity: null,
-      baseUrl: "http://api.openweathermap.org/data/2.5/weather?q=",
-      appid: "&appid=a9ada488ff5fd28a976eed7beada1e81",
-      city: null,
-      condition: null,
-      statusCode: null,
-      cityName: null,
-      loading: false
-    };
+  computed: {
+    ...mapGetters(["showWeather"]),
+    country: {
+      set: function(val) {
+        this.$store.commit("updateCountry", val);
+      },
+      get: function() {
+        return this.showWeather.country;
+      }
+    },
+    temp: {
+      set: function(val) {
+        this.$store.commit("updateTemp", val);
+      },
+      get: function() {
+        return this.showWeather.temp;
+      }
+    },
+    humidity: {
+      set: function(val) {
+        this.$store.commit("updateHumidity", val);
+      },
+      get: function() {
+        return this.showWeather.humidity;
+      }
+    },
+    city: {
+      set: function(val) {
+        this.$store.commit("updateCity", val);
+      },
+      get: function() {
+        return this.showWeather.city;
+      }
+    },
+    condition: {
+      set: function(val) {
+        this.$store.commit("updateCondition", val);
+      },
+      get: function() {
+        return this.showWeather.condition;
+      }
+    },
+    statusCode: {
+      set: function(val) {
+        this.$store.commit("updateStatusCode", val);
+      },
+      get: function() {
+        return this.showWeather.statusCode;
+      }
+    },
+    cityName: {
+      set: function(val) {
+        this.$store.commit("updateCityName", val);
+      },
+      get: function() {
+        return this.showWeather.cityName;
+      }
+    },
+    loading: {
+      set: function(val) {
+        this.$store.commit("updateLoading", val);
+      },
+      get: function() {
+        return this.showWeather.loading;
+      }
+    },
+    baseUrl: {
+      get: function() {
+        return this.showWeather.baseUrl;
+      }
+    },
+    appid: {
+      get: function() {
+        return this.showWeather.appid;
+      }
+    }
   },
   methods: {
+    ...mapActions(["getWeather"]),
     fetchWeather: function() {
       if (
         this.city !== null &&
         this.city !== "" &&
         (this.country !== null && this.country !== "")
       ) {
-        this.loading = true;
-        //  weather api
-        axios
-          .get(this.baseUrl + this.city + this.appid)
-          .then(response => {
-            this.temp = response.data.main.temp;
-            this.humidity = response.data.main.humidity;
-            this.condition = response.data.weather[0].main;
-            this.cityName = response.data.name;
-          })
-          .catch(error => {
-            // eslint-disable-next-line
-            console.log("AXIOS CATCH BLOCK", error);
-            this.statusCode = error.response.data.message;
-            this.city = null;
-            this.country = null;
-            this.temp = null;
-            this.humidity = null;
-            this.condition = null;
-            this.cityName = null;
-          })
-          .finally(() => (this.loading = false));
-        //  weather api close
-        //clear input fields
-        this.city = null;
-        this.country = null;
-        this.statusCode = null;
+        this.getWeather({
+          mode: {
+            apiUrl: this.baseUrl + this.city + "," + this.country + this.appid
+          },
+          loading: true
+        });
       } else {
         alert("please fill all details");
       }
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 

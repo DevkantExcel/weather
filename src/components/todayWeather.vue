@@ -44,85 +44,21 @@
 </template>
 
 <script>
+import { sync, set, get } from "vuex-pathify";
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "todayWeather",
   computed: {
-    ...mapGetters(["showWeather"]),
-    country: {
-      set: function(val) {
-        this.$store.commit("updateCountry", val);
-      },
-      get: function() {
-        return this.showWeather.country;
-      }
-    },
-    temp: {
-      set: function(val) {
-        this.$store.commit("updateTemp", val);
-      },
-      get: function() {
-        return this.showWeather.temp;
-      }
-    },
-    humidity: {
-      set: function(val) {
-        this.$store.commit("updateHumidity", val);
-      },
-      get: function() {
-        return this.showWeather.humidity;
-      }
-    },
-    city: {
-      set: function(val) {
-        this.$store.commit("updateCity", val);
-      },
-      get: function() {
-        return this.showWeather.city;
-      }
-    },
-    condition: {
-      set: function(val) {
-        this.$store.commit("updateCondition", val);
-      },
-      get: function() {
-        return this.showWeather.condition;
-      }
-    },
-    statusCode: {
-      set: function(val) {
-        this.$store.commit("updateStatusCode", val);
-      },
-      get: function() {
-        return this.showWeather.statusCode;
-      }
-    },
-    cityName: {
-      set: function(val) {
-        this.$store.commit("updateCityName", val);
-      },
-      get: function() {
-        return this.showWeather.cityName;
-      }
-    },
-    loading: {
-      set: function(val) {
-        this.$store.commit("updateLoading", val);
-      },
-      get: function() {
-        return this.showWeather.loading;
-      }
-    },
-    baseUrl: {
-      get: function() {
-        return this.showWeather.baseUrl;
-      }
-    },
-    appid: {
-      get: function() {
-        return this.showWeather.appid;
-      }
-    }
+    country: sync("weather@country"),
+    temp: sync("weather@temp"),
+    humidity: sync("weather@humidity"),
+    city: sync("weather@city"),
+    condition: sync("weather@condition"),
+    statusCode: sync("weather@statusCode"),
+    cityName: sync("weather@cityName"),
+    loading: sync("weather@loading"),
+    baseUrl: sync("weather@baseUrl"),
+    appid: sync("weather@appid")
   },
   methods: {
     ...mapActions(["getWeather"]),

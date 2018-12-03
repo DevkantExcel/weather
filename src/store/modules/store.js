@@ -1,122 +1,97 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+import {make} from 'vuex-pathify'
+import pathify from './pathify'
 import axios from 'axios'
-export default {
-    state: {
-        lineChart: {
-            ydif: 10,
-            linechartData: [{
-                    "Year": 2007,
-                    "Men": 106898,
-                    "Female": 97516
-                },
-                {
-                    "Year": 2008,
-                    "Men": 103937,
-                    "Female": 94796
-                },
-                {
-                    "Year": 2009,
-                    "Men": 99492,
-                    "Female": 91818
-                },
-                {
-                    "Year": 2010,
-                    "Men": 87213,
-                    "Female": 79673
-                },
-                {
-                    "Year": 2011,
-                    "Men": 101943,
-                    "Female": 94684
-                },
-                {
-                    "Year": 2012,
-                    "Men": 118848,
-                    "Female": 110633
-                },
-                {
-                    "Year": 2013,
-                    "Men": 103120,
-                    "Female": 95993
-                },
-            ]
-        },
-        weather: {
-            country: null,
-            temp: null,
-            humidity: null,
-            baseUrl: "http://api.openweathermap.org/data/2.5/weather?q=",
-            appid: "&units=metric&appid=a9ada488ff5fd28a976eed7beada1e81",
-            city: null,
-            condition: null,
-            statusCode: null,
-            cityName: null,
-            loading: false
-        }
 
+const state = {
+    lineChart: {
+        ydif: 10,
+        linechartData: [{
+                "Year": 2007,
+                "Men": 106898,
+                "Female": 97516
+            },
+            {
+                "Year": 2008,
+                "Men": 103937,
+                "Female": 94796
+            },
+            {
+                "Year": 2009,
+                "Men": 99492,
+                "Female": 91818
+            },
+            {
+                "Year": 2010,
+                "Men": 87213,
+                "Female": 79673
+            },
+            {
+                "Year": 2011,
+                "Men": 101943,
+                "Female": 94684
+            },
+            {
+                "Year": 2012,
+                "Men": 118848,
+                "Female": 110633
+            },
+            {
+                "Year": 2013,
+                "Men": 103120,
+                "Female": 95993
+            },
+        ]
     },
-    mutations: {
-        updateCountry: (state, val) => {
-            state.weather.country = val;
-        },
-        updateTemp: (state, val) => {
-            state.weather.temp = val;
-        },
-        updateHumidity: (state, val) => {
-            state.weather.humidity = val;
-        },
-        updateCity: (state, val) => {
-            state.weather.city = val;
-        },
-        updateCondition: (state, val) => {
-            state.weather.condition = val;
-        },
-        updateStatusCode: (state, val) => {
-            state.weather.statusCode = val;
-        },
-        updateCityName: (state, val) => {
-            state.weather.name = val;
-        },
-        updateLoading: (state, val) => {
-            state.weather.loading = val;
-        },
-        updateData: (state, val) => {
-            state.weather.temp = val.main.temp;
-            state.weather.humidity = val.main.humidity;
-            state.weather.condition = val.weather[0].main;
-            state.weather.cityName = val.name;
-        },
-        updateError: (state, val) => {
-            state.weather.statusCode = val;
-            state.weather.city = null;
-            state.weather.country = null;
-            state.weather.temp = null;
-            state.weather.humidity = null;
-            state.weather.condition = null;
-            state.weather.cityName = null;
-        },
-        defaultLoading: (state, val) => {
-            state.weather.loading = val;
-        },
-        updateLoadingFinally: (state, val) => {
-            state.weather.loading = val;
-        },
+    weather: {
+        country: null,
+        temp: null,
+        humidity: null,
+        baseUrl: "http://api.openweathermap.org/data/2.5/weather?q=",
+        appid: "&units=metric&appid=a9ada488ff5fd28a976eed7beada1e81",
+        city: null,
+        condition: null,
+        statusCode: null,
+        cityName: null,
+        loading: false
+    }
 
-    },
-    actions: {
-        async getWeather({commit}, payload) {
-            commit('defaultLoading', payload.loading),
-                axios.get(`${payload.mode.apiUrl}`)
-                .then(response => {
-                    commit('updateData', response.data)
-                }).catch(error => {
-                    commit('updateError', error.response.data.message)
-                }).finally(() => {
-                    commit('updateLoadingFinally', false)
-                });
-        },
-    },
-    getters: {
-        showLineChart: state => state.lineChart,
-        showWeather: state => state.weather
-    },
 }
+const mutations = make.mutations(state)
+const actions = {
+    ...make.actions(state),
+    async getWeather({
+        commit
+    }, payload) {
+        commit('defaultLoading', payload.loading),
+            axios.get(`${payload.mode.apiUrl}`)
+            .then(response => {
+                store.set('weather@temp', response.data.main.temp)
+                store.set('weather@humidity', response.data.main.humidity)
+                store.set('weather@condition', response.data.weather[0].main)
+                store.set('weather@cityName', response.data.name)
+            }).catch(error => {
+                store.set('weather@statusCode', error.response.data.message)
+                store.set('weather@city', null)
+                store.set('weather@country', null)
+                store.set('weather@temp', null)
+                store.set('weather@humidity', null)
+                store.set('weather@condition', null)
+                store.set('weather@cityName', null)
+            }).finally(() => {
+                store.set('weather@loading', false)
+            });
+    }
+}
+const getters = {
+    ...make.getters(state)
+}
+Vue.use(Vuex)
+export default new Vuex.Store({
+    plugins: [pathify.plugin],
+    state,
+    mutations,
+    actions,
+    getters
+})

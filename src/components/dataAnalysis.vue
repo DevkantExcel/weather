@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
+import { sync } from 'vuex-pathify'
 import Raphael from 'raphael/raphael'
 global.Raphael = Raphael
 import { LineChart } from "vue-morris"
@@ -35,13 +35,9 @@ export default {
     LineChart
   },
   computed: {
-    ...mapGetters(['showLineChart']),
-    ydif(){
-      return this.showLineChart.ydif
-    },
-    linechartData(){
-      return this.showLineChart.linechartData
-    },
+    ydif:sync('lineChart@ydif'),
+    linechartData:sync('lineChart@linechartData')
+    // ...sync('*') // used to fetch all data
     
   }
 };

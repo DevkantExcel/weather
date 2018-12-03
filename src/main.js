@@ -3,8 +3,8 @@ import App from './App.vue'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import store from './store/modules/store'
 import VueRouter from 'vue-router'
-import store from './store'
 
 
 import dataAnalysis from './components/dataAnalysis.vue';
@@ -28,8 +28,9 @@ const routes = [{
 const router = new VueRouter({
   routes // short for `routes: routes`  
 })
+window.store = store //code for pathify
 new Vue({
   router: router,
   render: h => h(App),
-  store
+  store,
 }).$mount('#app')

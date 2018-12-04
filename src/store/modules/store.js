@@ -54,18 +54,16 @@ const state = {
         condition: null,
         statusCode: null,
         cityName: null,
-        loading: false
+        loading: false,
     }
 
 }
 const mutations = make.mutations(state)
 const actions = {
     ...make.actions(state),
-    async getWeather({
-        commit
-    }, payload) {
-        commit('defaultLoading', payload.loading),
-            axios.get(`${payload.mode.apiUrl}`)
+    getWeather({state, commit}, payload) {
+        store.set('weather@loading', payload.loading),
+            axios.get(`${payload.apiUrl}`)
             .then(response => {
                 store.set('weather@temp', response.data.main.temp)
                 store.set('weather@humidity', response.data.main.humidity)

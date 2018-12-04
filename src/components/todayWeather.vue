@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { sync, set, get } from "vuex-pathify";
-import { mapGetters, mapActions } from "vuex";
+import { sync } from "vuex-pathify";
+// import { mapGetters, mapActions } from "vuex";
 export default {
   name: "todayWeather",
   computed: {
@@ -61,19 +61,12 @@ export default {
     appid: sync("weather@appid")
   },
   methods: {
-    ...mapActions(["getWeather"]),
-    fetchWeather: function() {
-      if (
-        this.city !== null &&
-        this.city !== "" &&
-        (this.country !== null && this.country !== "")
-      ) {
-        this.getWeather({
-          mode: {
-            apiUrl: this.baseUrl + this.city + "," + this.country + this.appid
-          },
+    fetchWeather() {
+      if (this.city !== null &&this.city !== "" &&(this.country !== null && this.country !== "")) {
+       this.$store.dispatch('getWeather', {
+          apiUrl: this.baseUrl + this.city + "," + this.country + this.appid,
           loading: true
-        });
+          })
       } else {
         alert("please fill all details");
       }

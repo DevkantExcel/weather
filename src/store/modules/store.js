@@ -48,8 +48,6 @@ const state = {
         country: null,
         temp: null,
         humidity: null,
-        baseUrl: "http://api.openweathermap.org/data/2.5/weather?q=",
-        appid: "&units=metric&appid=a9ada488ff5fd28a976eed7beada1e81",
         city: null,
         condition: null,
         statusCode: null,

@@ -60,10 +60,12 @@ export default {
   methods: {
     api: call("getWeather"),
     fetchWeather: function(){
+      if((this.city !== '' && this.city !== null) && (this.country !== '' && this.country !== null)) {
       this.api({
       apiUrl: process.env.VUE_APP_baseUrl + this.city + "," + this.country + process.env.VUE_APP_appid,
       loading: true
     })
+    }else{ alert('please fill all the details') }
     }
   }
 };

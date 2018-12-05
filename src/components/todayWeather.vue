@@ -15,7 +15,7 @@
             <b-alert v-show="this.statusCode !== null" show variant="danger">{{ statusCode }}</b-alert>
 
             <img
-              v-show="this.condition!==('Clouds' && 'Rain' && 'Clear')"
+              v-show="this.condition!==('Clouds' || 'Rain' || 'Clear')"
               id="na"
               src="../../public/img_trans.gif"
               alt="ICONS"
@@ -49,13 +49,13 @@ export default {
   name: "todayWeather",
   computed: {
     country: sync("weather@country"),
-    temp: sync("weather@temp"),
-    humidity: sync("weather@humidity"),
     city: sync("weather@city"),
-    condition: sync("weather@condition"),
-    statusCode: sync("weather@statusCode"),
-    cityName: sync("weather@cityName"),
-    loading: sync("weather@loading"),
+    temp: get("weather@temp"),
+    humidity: get("weather@humidity"),
+    condition: get("weather@condition"),
+    statusCode: get("weather@statusCode"),
+    cityName: get("weather@cityName"),
+    loading: get("weather@loading"),
   },
   methods: {
     api: call("getWeather"),

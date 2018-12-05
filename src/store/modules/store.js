@@ -59,25 +59,33 @@ const state = {
 const mutations = make.mutations(state)
 const actions = {
     ...make.actions(state),
-    getWeather({state, commit}, payload) {
-        store.set('weather@loading', payload.loading),
-            axios.get(`${payload.apiUrl}`)
-            .then(response => {
-                store.set('weather@temp', response.data.main.temp)
-                store.set('weather@humidity', response.data.main.humidity)
-                store.set('weather@condition', response.data.weather[0].main)
-                store.set('weather@cityName', response.data.name)
-            }).catch(error => {
-                store.set('weather@statusCode', error.response.data.message)
-                store.set('weather@city', null)
-                store.set('weather@country', null)
-                store.set('weather@temp', null)
-                store.set('weather@humidity', null)
-                store.set('weather@condition', null)
-                store.set('weather@cityName', null)
-            }).finally(() => {
-                store.set('weather@loading', false)
-            });
+    async getWeather({state, commit}, payload) {
+        let response = null
+        store.set('weather@statusCode', null) //unset city not found message
+        store.set('weather@loading', payload.loading) //set loading image
+        try {
+            response = await axios.get(`${payload.apiUrl}`)
+            store.set('weather@temp', response.data.main.temp)
+            store.set('weather@humidity', response.data.main.humidity)
+            store.set('weather@condition', response.data.weather[0].main)
+            store.set('weather@cityName', response.data.name)
+            store.set('weather@loading', false) //unset loading image
+        } 
+        catch (error) {
+            store.set('weather@statusCode', error.response.data.message) //set city not found message
+            store.set('weather@city', null)
+            store.set('weather@country', null)
+            store.set('weather@temp', null)
+            store.set('weather@humidity', null)
+            store.set('weather@condition', null)
+            store.set('weather@cityName', null)
+            store.set('weather@loading', false)
+        }
+            // .then(response => {
+            // }).catch(error => {
+            // }).finally(() => {
+            //     store.set('weather@loading', false)
+            // });
     }
 }
 const getters = {
